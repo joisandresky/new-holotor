@@ -27,6 +27,18 @@ func GetAnalytics(c *gin.Context) {
 	}
 
 	if err = session.DB("holotor").C("driver").Find(bson.M{"driver_id": driverID}).One(&driver); err != nil {
+		driver = models.Driver{ID: bson.NewObjectId(), DriverID: driverID, Daily: 0, Annualy: 0, Total: 0, UpdatedAt: time.Now()}
+		errCreate := session.DB("holotor").C("driver").Insert(driver)
+
+		if errCreate != nil {
+			log.Println(errCreate)
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+				"message": "Driver Not found or something error!",
+				"success": false,
+				"error":   errCreate,
+			})
+			return
+		}
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"message": "Driver Not found or something error!",
 			"success": false,
@@ -94,6 +106,38 @@ func UpdateDistance(c *gin.Context) {
 		"message":   "Distance Driver Updated!",
 		"driver_id": driverID,
 		"success":   true,
+	})
+}
+
+// CreateNewDriver - Create new driver
+func CreateNewDriver(c *gin.Context) {
+	session, err := config.Connect()
+
+	defer session.Close()
+	body := &models.Driver{ID: bson.NewObjectId()}
+	c.BindJSON(body)
+
+	if body == nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Pengisian Data Tidak Lengkap",
+			"success": false,
+			"body":    body,
+		})
+	}
+
+	if err = session.DB("holotor").C("driver").Insert(body); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "Error on Saving New Driver",
+			"success": false,
+			"error":   err,
+		})
+	}
+	defer session.Close()
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Success Saving New Driver",
+		"success": true,
+		"driver":  body,
 	})
 }
 
