@@ -27,7 +27,7 @@ func GetAnalytics(c *gin.Context) {
 	}
 
 	if err = session.DB("holotor").C("driver").Find(bson.M{"driver_id": driverID}).One(&driver); err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"message": "Driver Not found or something error!",
 			"success": false,
 			"error":   err,
@@ -62,7 +62,7 @@ func UpdateDistance(c *gin.Context) {
 
 		if errCreate != nil {
 			log.Println(errCreate)
-			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 				"message": "Driver Not found or something error!",
 				"success": false,
 				"error":   errCreate,
