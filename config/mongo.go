@@ -6,7 +6,7 @@ import (
 
 // Connect - Connecting to mongodb
 func Connect() (*mgo.Session, error) {
-	session, err := mgo.Dial("host.docker.internal")
+	session, err := mgo.Dial("159.89.193.168")
 	if err != nil {
 		return nil, err
 	}

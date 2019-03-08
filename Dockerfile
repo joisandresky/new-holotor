@@ -19,7 +19,7 @@ RUN go get -d -v ./...
 RUN go install -v ./...
 
 # This container exposes port 8080 to the outside world
-EXPOSE 8787
+EXPOSE 8989
 
 # Run the executable
 CMD ["new-holotor"]

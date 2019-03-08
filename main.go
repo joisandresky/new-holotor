@@ -25,7 +25,7 @@ func main() {
 		driver.PUT("/analytics/:id", controllers.UpdateDistance)
 	}
 
-	r.Run(":8787")
+	r.Run(":8989")
 }
 
 func wsHandler(c *gin.Context) {
