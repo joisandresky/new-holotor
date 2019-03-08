@@ -27,18 +27,6 @@ func GetAnalytics(c *gin.Context) {
 	}
 
 	if err = session.DB("holotor").C("driver").Find(bson.M{"driver_id": driverID}).One(&driver); err != nil {
-		driver = models.Driver{ID: bson.NewObjectId(), DriverID: driverID, Daily: 0, Annualy: 0, Total: 0, UpdatedAt: time.Now()}
-		errCreate := session.DB("holotor").C("driver").Insert(driver)
-
-		if errCreate != nil {
-			log.Println(errCreate)
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-				"message": "Driver Not found or something error!",
-				"success": false,
-				"error":   errCreate,
-			})
-			return
-		}
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"message": "Driver Not found or something error!",
 			"success": false,
