@@ -1,25 +1,20 @@
-
-# Start from golang v1.11 base image
 FROM golang:1.8
 
-# Add Maintainer Info
-LABEL maintainer="joisandresky@gmail.com"
+# Create the directory where the application will reside
+RUN mkdir /app
 
-# Set the Current Working Directory inside the container
-WORKDIR $GOPATH/src/github.com/joisandresky/new-holotor
+# Copy the application files (needed for production)
+ADD new-holotor /app/new-holotor
+ADD controllers /app/controllers
+ADD models /app/models
+ADD config /app/config
 
-# Copy everything from the current directory to the PWD(Present Working Directory) inside the container
-COPY . .
+# Set the working directory to the app directory
+WORKDIR /app
 
-# Download all the dependencies
-# https://stackoverflow.com/questions/28031603/what-do-three-dots-mean-in-go-command-line-invocations
-RUN go get -d -v ./...
-
-# Install the package
-RUN go install -v ./...
-
-# This container exposes port 8080 to the outside world
+# Expose the application on port 8080.
+# This should be the same as in the app.conf file
 EXPOSE 8989
 
-# Run the executable
-CMD ["new-holotor"]
+# Set the entry point of the container to the application executable
+ENTRYPOINT /app/new-holotor
