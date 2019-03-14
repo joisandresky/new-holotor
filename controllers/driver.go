@@ -35,6 +35,12 @@ func GetAnalytics(c *gin.Context) {
 		return
 	}
 	defer session.Close()
+
+	currentTime := time.Now()
+	if dateEqual(currentTime, driver.UpdatedAt) != true {
+		driver.Daily = 0
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": nil,
 		"success": true,
