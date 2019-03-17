@@ -164,7 +164,7 @@ func UpdateAnnualyDistance(driver *models.Driver, driverID string, distance floa
 	session, err := config.Connect()
 	defer session.Close()
 
-	if currentTime.Year() != driver.UpdatedAt.Year() {
+	if currentTime.Month() != driver.UpdatedAt.Month() {
 		if err = session.DB("holotor").C("driver").Update(bson.M{"driver_id": driverID}, bson.M{"$set": bson.M{"annualy": distance, "updated_at": time.Now()}}); err != nil {
 			log.Println("Error Updating Driver Distance")
 			return
