@@ -1,16 +1,21 @@
 package main
 
 import (
+	"github.com/joisandresky/new-holotor/controllers"
 	"log"
 	"net/http"
-
-	"github.com/joisandresky/new-holotor/controllers"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
 
-var wsupgrader = websocket.Upgrader{}
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:   1024,
+	WriteBufferSize:  1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 func main() {
 	r := gin.Default()
@@ -41,7 +46,6 @@ func wsHandler(c *gin.Context) {
 		http.Error(c.Writer, "Could not open websocket connection", http.StatusBadRequest)
 	}
 
-	defer conn.Close()
 	go refreshAnalytics(conn)
 }
 
@@ -49,10 +53,12 @@ func refreshAnalytics(conn *websocket.Conn) {
 	for {
 		t, msg, err := conn.ReadMessage()
 		if err != nil {
+			log.Println("an error occured for getting message", err)
 			break
 		}
 		conn.WriteMessage(t, msg)
 	}
+	defer conn.Close()
 }
 
 func headlessHandler (c *gin.Context) {
