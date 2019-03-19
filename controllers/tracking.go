@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/joisandresky/new-holotor/models"
+	"github.com/jinzhu/now"
 	"github.com/joisandresky/new-holotor/config"
+	"github.com/joisandresky/new-holotor/models"
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"net/http"
@@ -11,6 +12,8 @@ import (
 	"strconv"
 	"time"
 )
+
+
 
 //CreateTracking - creating tracking point
 func CreateTracking(c *gin.Context) {
@@ -28,7 +31,7 @@ func CreateTracking(c *gin.Context) {
 		})
 		return
 	}
-
+	body.CreatedAt = time.Now()
 	if err = session.DB("holotor").C("tracking").Insert(body); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "Error on Saving New Tracking Point",
@@ -37,7 +40,6 @@ func CreateTracking(c *gin.Context) {
 		})
 		return
 	}
-	defer session.Close()
 
 	driverIdStr := strconv.Itoa(body.DriverID)
 
@@ -72,4 +74,240 @@ func UpdateTrackDistance(driverID string, distance float64) {
 
 	go UpdateDailyDistance(&driver, driverID, distance)
 	go UpdateAnnualyDistance(&driver, driverID, distance)
+}
+
+//GetTrackingByDriver - get summary tracking driver by id
+func GetTrackingByDriver(c *gin.Context) {
+	session, err := config.Connect()
+	defer session.Close()
+	paramID := c.Param("id")
+	filter := c.DefaultQuery("filter", "all")
+	driverID, err := strconv.Atoi(paramID)
+
+	trackings := []*models.Tracking{}
+	if filter == "all" {
+		if err = session.DB("holotor").C("tracking").Find(bson.M{"driverId": driverID}).Sort("created_at").All(&trackings); err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"message": "Driver not Found or Some error occured!",
+				"success": false,
+				"error": err,
+			})
+			return
+		}
+	} else {
+		var query interface{}
+		switch ft := filter ; ft {
+		case "day":
+			startDate := now.BeginningOfDay()
+			endDate := now.EndOfDay()
+			query = bson.M{
+				"driverId": driverID,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		case "week":
+			startDate := now.BeginningOfWeek()
+			endDate := now.EndOfWeek()
+			query = bson.M{
+				"driverId": driverID,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		case "month":
+			startDate := now.BeginningOfMonth()
+			endDate := now.EndOfMonth()
+			query = bson.M{
+				"driverId": driverID,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		default:
+			startDate := now.BeginningOfYear()
+			endDate := now.EndOfYear()
+			query = bson.M{
+				"driverId": driverID,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		}
+		if err = session.DB("holotor").C("tracking").Find(query).Sort("created_at").All(&trackings); err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"message": "Driver not Found or Some error occured!",
+				"success": false,
+				"error": err,
+			})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": nil,
+		"success": true,
+		"trackings":  trackings,
+	})
+}
+//GetTrackingByAd - get tracking data by Ads Id
+func GetTrackingByAd(c *gin.Context) {
+	session, err := config.Connect()
+	defer session.Close()
+	paramID := c.Param("id")
+	filter := c.DefaultQuery("filter", "all")
+	adsId, err := strconv.Atoi(paramID)
+
+	trackings := []*models.Tracking{}
+
+	if filter == "all" {
+		if err = session.DB("holotor").C("tracking").Find(bson.M{"adsId": adsId}).Sort("created_at").All(&trackings); err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"message": "Ads not Found or Some error occured!",
+				"success": false,
+				"error": err,
+			})
+			return
+		}
+	} else {
+		var query interface{}
+		switch ft := filter ; ft {
+		case "day":
+			startDate := now.BeginningOfDay()
+			endDate := now.EndOfDay()
+			query = bson.M{
+				"adsId": adsId,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		case "week":
+			startDate := now.BeginningOfWeek()
+			endDate := now.EndOfWeek()
+			query = bson.M{
+				"adsId": adsId,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		case "month":
+			startDate := now.BeginningOfMonth()
+			endDate := now.EndOfMonth()
+			query = bson.M{
+				"adsId": adsId,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		default:
+			startDate := now.BeginningOfYear()
+			endDate := now.EndOfYear()
+			query = bson.M{
+				"adsId": adsId,
+				"created_at": bson.M{
+					"$gte": startDate,
+					"$lte": endDate,
+				},
+			}
+		}
+		if err = session.DB("holotor").C("tracking").Find(query).Sort("created_at").All(&trackings); err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+				"message": "Ads not Found or Some error occured!",
+				"success": false,
+				"error": err,
+			})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": nil,
+		"success": true,
+		"trackings":  trackings,
+	})
+}
+
+//GetDriverLastLocation - get driver last Location
+func GetDriverLastLocation(c *gin.Context) {
+	session, err := config.Connect()
+	defer session.Close()
+	paramID := c.Param("id")
+	driverID, err := strconv.Atoi(paramID)
+
+	var tracking *models.Tracking
+	if err = session.DB("holotor").C("tracking").Find(bson.M{"driverId": driverID}).Sort("-created_at").Limit(1).One(&tracking); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "Driver not Found or Some error occured!",
+			"success": false,
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": nil,
+		"success": true,
+		"location":  tracking,
+	})
+}
+
+//GetDriverLastLocationByAd - get all Driver last location by Ads Id
+func GetDriverLastLocationByAd(c *gin.Context) {
+	session, err := config.Connect()
+	defer session.Close()
+	paramID := c.Param("id")
+	adsId, err := strconv.Atoi(paramID)
+
+	var trackings []interface{}
+	query := []bson.M{
+		bson.M{
+			"$match": bson.M{ "adsId": adsId },
+		},
+		bson.M{
+			"$sort": bson.M{
+				"created_at": -1,
+			},
+		},
+		bson.M{
+			"$group": bson.M{
+				"_id": bson.M{"driverId": "$driverId", "adsId": "$adsId", },
+				"created_at": bson.M{"$first": "$created_at"},
+				"driverId": bson.M{"$first": "$driverId"},
+				"lat": bson.M{"$first": "$lat"},
+				"long": bson.M{"$first": "$long"},
+			},
+		},
+		bson.M{
+			"$project": bson.M{
+				"_id": 0,
+				"adsId": "$_id.adsId",
+				"driverId": 1,
+				"lat": 1,
+				"long": 1,
+			},
+		},
+	}
+	pipe := session.DB("holotor").C("tracking").Pipe(query)
+
+	if err = pipe.All(&trackings); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "Driver not Found or Some error occured!",
+			"success": false,
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": nil,
+		"success": true,
+		"trackings":  trackings,
+	})
 }

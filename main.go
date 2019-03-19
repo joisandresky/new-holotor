@@ -25,6 +25,10 @@ func main() {
 
 	tracking := r.Group("/api/trackings")
 	{
+		tracking.GET("/ads/:id/driver-location", controllers.GetDriverLastLocationByAd)
+		tracking.GET("/ads/:id", controllers.GetTrackingByAd)
+		tracking.GET("/driver/:id/location", controllers.GetDriverLastLocation)
+		tracking.GET("/driver/:id", controllers.GetTrackingByDriver)
 		tracking.POST("/", controllers.CreateTracking)
 	}
 
