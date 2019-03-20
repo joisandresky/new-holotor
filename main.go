@@ -23,9 +23,7 @@ func main() {
 
 	r.GET("/ws", wsHandler)
 	r.POST("/headless", headlessHandler)
-	driver := r.Group("/api/drivers", gin.BasicAuth(gin.Accounts{
-		"holotor-go": "golangkencengcoyy",
-	}))
+	driver := r.Group("/api/drivers")
 	{
 		driver.GET("/analytics/:id", controllers.GetAnalytics)
 		driver.POST("/analytics", controllers.CreateNewDriver)
