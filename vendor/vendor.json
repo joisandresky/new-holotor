@@ -39,6 +39,66 @@
 			"revisionTime": "2019-02-28T15:19:29Z"
 		},
 		{
+			"checksumSHA1": "R+2UXAaxU3ODpEwXnDMbJTgBpXg=",
+			"path": "github.com/googollee/go-engine.io",
+			"revision": "f6591dc439eea366878d1b571f45a344cb2134a4",
+			"revisionTime": "2019-02-17T11:03:35Z"
+		},
+		{
+			"checksumSHA1": "NqZgPAuIXE1laXJFk72/jWpgc/4=",
+			"path": "github.com/googollee/go-engine.io/base",
+			"revision": "f6591dc439eea366878d1b571f45a344cb2134a4",
+			"revisionTime": "2019-02-17T11:03:35Z"
+		},
+		{
+			"checksumSHA1": "ko0gwT9ZUsQ4ncENG57gLC5BeUE=",
+			"path": "github.com/googollee/go-engine.io/packet",
+			"revision": "f6591dc439eea366878d1b571f45a344cb2134a4",
+			"revisionTime": "2019-02-17T11:03:35Z"
+		},
+		{
+			"checksumSHA1": "EUUmjuiiriFuoEJpBCGdXYnN9/I=",
+			"path": "github.com/googollee/go-engine.io/payload",
+			"revision": "f6591dc439eea366878d1b571f45a344cb2134a4",
+			"revisionTime": "2019-02-17T11:03:35Z"
+		},
+		{
+			"checksumSHA1": "O4VL36JJ/8m2RKaD17kfiGCI6dY=",
+			"path": "github.com/googollee/go-engine.io/transport",
+			"revision": "f6591dc439eea366878d1b571f45a344cb2134a4",
+			"revisionTime": "2019-02-17T11:03:35Z"
+		},
+		{
+			"checksumSHA1": "pfUdGPJ9UGBhwVh0O78AhL6U+gc=",
+			"path": "github.com/googollee/go-engine.io/transport/polling",
+			"revision": "f6591dc439eea366878d1b571f45a344cb2134a4",
+			"revisionTime": "2019-02-17T11:03:35Z"
+		},
+		{
+			"checksumSHA1": "R5xCkV1p/0Cb4aKRBzd95W8bBv8=",
+			"path": "github.com/googollee/go-engine.io/transport/websocket",
+			"revision": "f6591dc439eea366878d1b571f45a344cb2134a4",
+			"revisionTime": "2019-02-17T11:03:35Z"
+		},
+		{
+			"checksumSHA1": "U1bzyvro5OxbR2YJpTkRfqoW6oI=",
+			"path": "github.com/googollee/go-socket.io",
+			"revision": "96da97a7c8f269421388fbb0dca12aa3c0699088",
+			"revisionTime": "2019-02-17T10:25:00Z",
+			"version": "v1",
+			"versionExact": "v1.4.1"
+		},
+		{
+			"path": "github.com/googollee/go-socket.io.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2dhZK2HH2TJmRmPXJPbdc4I62fI=",
+			"path": "github.com/googollee/go-socket.io/parser",
+			"revision": "ed07a7212e28b37e3fd3753bbb3f48c441e2965e",
+			"revisionTime": "2019-03-17T09:56:03Z"
+		},
+		{
 			"checksumSHA1": "fu7IKee943urVeSyUgnvsBlATOc=",
 			"path": "github.com/gorilla/websocket",
 			"revision": "0ec3d1bd7fe50c503d6df98ee649d81f4857c564",
@@ -79,6 +139,12 @@
 			"path": "github.com/ugorji/go/codec",
 			"revision": "e444a5086c436778cf9281a7059a3d58b9e17935",
 			"revisionTime": "2019-02-04T20:13:41Z"
+		},
+		{
+			"checksumSHA1": "F+tqxPGFt5x7DKZakbbMmENX1oQ=",
+			"path": "golang.org/x/net/websocket",
+			"revision": "1272bf9dcd53ea65c09668fb4c76e65deb740072",
+			"revisionTime": "2019-03-19T09:36:27Z"
 		},
 		{
 			"checksumSHA1": "5Pn8EC3Y5HiNKmaLv0WlIbITQh4=",

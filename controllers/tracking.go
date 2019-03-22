@@ -81,12 +81,20 @@ func GetTrackingByDriver(c *gin.Context) {
 	session, err := config.Connect()
 	defer session.Close()
 	paramID := c.Param("id")
+	sortParam := c.DefaultQuery("sort", "asc")
 	filter := c.DefaultQuery("filter", "all")
 	driverID, err := strconv.Atoi(paramID)
+	var sortBy string
+
+	if sortParam == "asc" {
+		sortBy = "created_at"
+	} else {
+		sortBy = "-created_at"
+	}
 
 	trackings := []*models.Tracking{}
 	if filter == "all" {
-		if err = session.DB("holotor").C("tracking").Find(bson.M{"driverId": driverID}).Sort("created_at").All(&trackings); err != nil {
+		if err = session.DB("holotor").C("tracking").Find(bson.M{"driverId": driverID}).Sort(sortBy).All(&trackings); err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 				"message": "Driver not Found or Some error occured!",
 				"success": false,
@@ -154,6 +162,65 @@ func GetTrackingByDriver(c *gin.Context) {
 		"trackings":  trackings,
 	})
 }
+
+//GetAllTrackingDrivers - get all drivers tracking point history
+func GetAllTrackingDrivers(c *gin.Context) {
+	session, err := config.Connect()
+	defer session.Close()
+	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "25"))
+	skip := (page - 1 ) * limit
+
+	var trackings []interface{}
+	query := []bson.M{
+		bson.M{
+			"$sort": bson.M{
+				"created_at": 1,
+			},
+		},
+		bson.M{
+			"$group": bson.M{
+				"_id": bson.M{"driverId": "$driverId" },
+				"locations": bson.M{"$push": "$$ROOT"},
+				//"lat": bson.M{"$first": "$lat"},
+				//"long": bson.M{"$first": "$long"},
+			},
+		},
+		bson.M{
+			"$project": bson.M{
+				"_id": 0,
+				"adsId": "$_id.adsId",
+				"driverId": 1,
+				"lat": 1,
+				"long": 1,
+				"locations": 1,
+			},
+		},
+		bson.M{
+			"$skip": skip,
+		},
+		bson.M{
+			"$limit": limit,
+		},
+	}
+	pipe := session.DB("holotor").C("tracking").Pipe(query)
+
+	if err = pipe.All(&trackings); err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "Driver not Found or Some error occured!",
+			"success": false,
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": nil,
+		"success": true,
+		"trackings":  trackings,
+	})
+}
+
 //GetTrackingByAd - get tracking data by Ads Id
 func GetTrackingByAd(c *gin.Context) {
 	session, err := config.Connect()
