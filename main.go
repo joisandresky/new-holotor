@@ -2,16 +2,12 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/googollee/go-socket.io"
 	"github.com/gorilla/websocket"
 	"github.com/joisandresky/new-holotor/controllers"
 	"log"
 	"net/http"
 )
 
-type customServer struct {
-	Server *socketio.Server
-}
 var clients = make(map[*websocket.Conn]bool)
 var broadcast = make(chan Message)
 var wsupgrader = websocket.Upgrader{
