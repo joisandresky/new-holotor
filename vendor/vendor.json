@@ -81,14 +81,6 @@
 			"revisionTime": "2019-02-17T11:03:35Z"
 		},
 		{
-			"checksumSHA1": "U1bzyvro5OxbR2YJpTkRfqoW6oI=",
-			"path": "github.com/googollee/go-socket.io",
-			"revision": "96da97a7c8f269421388fbb0dca12aa3c0699088",
-			"revisionTime": "2019-02-17T10:25:00Z",
-			"version": "v1",
-			"versionExact": "v1.4.1"
-		},
-		{
 			"path": "github.com/googollee/go-socket.io.v1",
 			"revision": ""
 		},
