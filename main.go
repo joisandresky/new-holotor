@@ -25,6 +25,7 @@ type Message struct {
 }
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	r.Use(CORSMiddleware())
