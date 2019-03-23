@@ -42,6 +42,7 @@ func CreateTracking(c *gin.Context) {
 	}
 
 	driverIdStr := strconv.Itoa(body.DriverID)
+	log.Println(driverIdStr)
 
 	go UpdateTrackDistance(driverIdStr, body.Distance)
 
@@ -53,27 +54,26 @@ func CreateTracking(c *gin.Context) {
 }
 
 //UpdateTrackingDistance - updating tracking distance
-func UpdateTrackDistance(driverID string, distance float64) {
+func UpdateTrackDistance(drvID string, distance float64) {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	session, err := config.Connect()
 	defer session.Close()
 
 	var driver models.Driver
-
-	if err = session.DB("holotor").C("driver").Find(bson.M{"driver_id": driverID}).One(&driver); err != nil {
+	if err = session.DB("holotor").C("driver").Find(bson.M{"driver_id": drvID}).One(&driver); err != nil {
 		log.Println("Driver Not Found")
 		return
 	}
 
-	if err = session.DB("holotor").C("driver").Update(bson.M{"driver_id": driverID}, bson.M{"$set": bson.M{"total": driver.Total + distance, "updated_at": time.Now()}}); err != nil {
+	if err = session.DB("holotor").C("driver").Update(bson.M{"driver_id": drvID}, bson.M{"$set": bson.M{"total": driver.Total + distance, "updated_at": time.Now()}}); err != nil {
 		log.Println("Error Updating Driver Distance")
 		return
 	}
 
 	log.Printf("Total Distance Updated!")
 
-	go UpdateDailyDistance(&driver, driverID, distance)
-	go UpdateAnnualyDistance(&driver, driverID, distance)
+	go UpdateDailyDistance(&driver, drvID, distance)
+	go UpdateAnnualyDistance(&driver, drvID, distance)
 }
 
 //GetTrackingByDriver - get summary tracking driver by id

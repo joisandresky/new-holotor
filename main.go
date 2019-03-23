@@ -51,7 +51,7 @@ func main() {
 		tracking.GET("/driver/:id", controllers.GetTrackingByDriver)
 		tracking.POST("/", controllers.CreateTracking)
 	}
-
+	r.POST("/api/secrets/tracking", controllers.CreateTracking)
 	r.Run(":8989")
 }
 
