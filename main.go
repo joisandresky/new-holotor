@@ -69,6 +69,7 @@ func wsHandler(c *gin.Context) {
 		if err != nil {
 			log.Printf("Error: %v", err)
 			delete(clients, conn)
+			break
 		}
 		broadcast <- msg
 	}
@@ -92,6 +93,7 @@ func handleMessage() {
 				log.Printf("error: %v", err)
 				client.Close()
 				delete(clients, client)
+				break
 			}
 		}
 	}
