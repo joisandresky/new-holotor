@@ -169,39 +169,80 @@ func GetAllTrackingDrivers(c *gin.Context) {
 	defer session.Close()
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, err := strconv.Atoi(c.DefaultQuery("limit", "25"))
+	adsId, err := strconv.Atoi(c.DefaultQuery("adsId", "-1"))
 	skip := (page - 1 ) * limit
 
 	var trackings []interface{}
-	query := []bson.M{
-		bson.M{
-			"$sort": bson.M{
-				"created_at": 1,
+	var query interface{}
+	if adsId != -1 {
+		query = []bson.M{
+			bson.M{
+				"$match": bson.M{ "adsId": adsId },
 			},
-		},
-		bson.M{
-			"$group": bson.M{
-				"_id": bson.M{"driverId": "$driverId" },
-				"locations": bson.M{"$push": "$$ROOT"},
-				//"lat": bson.M{"$first": "$lat"},
-				//"long": bson.M{"$first": "$long"},
+			bson.M{
+				"$sort": bson.M{
+					"created_at": 1,
+				},
 			},
-		},
-		bson.M{
-			"$project": bson.M{
-				"_id": 0,
-				"adsId": "$_id.adsId",
-				"driverId": 1,
-				"lat": 1,
-				"long": 1,
-				"locations": 1,
+			bson.M{
+				"$group": bson.M{
+					"_id": bson.M{"driverId": "$driverId" },
+					"driverId": bson.M{ "$first": "$driverId" },
+					"locations": bson.M{"$push": "$$ROOT"},
+					//"lat": bson.M{"$first": "$lat"},
+					//"long": bson.M{"$first": "$long"},
+				},
 			},
-		},
-		bson.M{
-			"$skip": skip,
-		},
-		bson.M{
-			"$limit": limit,
-		},
+			bson.M{
+				"$project": bson.M{
+					"_id": 0,
+					"adsId": "$_id.adsId",
+					"driverId": 1,
+					"lat": 1,
+					"long": 1,
+					"locations": 1,
+				},
+			},
+			bson.M{
+				"$skip": skip,
+			},
+			bson.M{
+				"$limit": limit,
+			},
+		}
+	} else {
+		query = []bson.M{
+			bson.M{
+				"$sort": bson.M{
+					"created_at": 1,
+				},
+			},
+			bson.M{
+				"$group": bson.M{
+					"_id": bson.M{"driverId": "$driverId" },
+					"driverId": bson.M{ "$first": "$driverId" },
+					"locations": bson.M{"$push": "$$ROOT"},
+					//"lat": bson.M{"$first": "$lat"},
+					//"long": bson.M{"$first": "$long"},
+				},
+			},
+			bson.M{
+				"$project": bson.M{
+					"_id": 0,
+					"adsId": "$_id.adsId",
+					"driverId": 1,
+					"lat": 1,
+					"long": 1,
+					"locations": 1,
+				},
+			},
+			bson.M{
+				"$skip": skip,
+			},
+			bson.M{
+				"$limit": limit,
+			},
+		}
 	}
 	pipe := session.DB("holotor").C("tracking").Pipe(query)
 

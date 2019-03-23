@@ -21,7 +21,7 @@ var wsupgrader = websocket.Upgrader{
 type Message struct {
 	MsgType	string
 	Message string
-	Sender string
+	Sender float64
 }
 
 func main() {
