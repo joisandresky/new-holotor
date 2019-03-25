@@ -8,7 +8,7 @@ import (
 //Tracking - models
 type Tracking struct {
 	ID	bson.ObjectId `json:"_id" bson:"_id,omitempty"`
-	AdsID	int	`json:"adsId" bson:"adsId"`
+	AdsID	[]int	`json:"adsId" bson:"adsId"`
 	DriverID int `json:"driverId" bson:"driverId"`
 	Distance	float64 `json:"distance" bson:"distance"`
 	Latitude	float64	`json:"lat" bson:"lat"`

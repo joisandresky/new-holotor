@@ -22,7 +22,7 @@ func CreateTracking(c *gin.Context) {
 	defer session.Close()
 	body := &models.Tracking{ID: bson.NewObjectId()}
 	c.BindJSON(body)
-
+	log.Println(body)
 	if body == nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"message": "Pengisian Data Tidak Lengkap",
@@ -177,7 +177,7 @@ func GetAllTrackingDrivers(c *gin.Context) {
 	if adsId != -1 {
 		query = []bson.M{
 			bson.M{
-				"$match": bson.M{ "adsId": adsId},
+				"$match": bson.M{ "adsId": adsId },
 			},
 			bson.M{
 				"$sort": bson.M{
