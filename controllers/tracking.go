@@ -177,7 +177,7 @@ func GetAllTrackingDrivers(c *gin.Context) {
 	if adsId != -1 {
 		query = []bson.M{
 			bson.M{
-				"$match": bson.M{ "adsId": adsId },
+				"$match": bson.M{ "adsId": adsId},
 			},
 			bson.M{
 				"$sort": bson.M{
@@ -219,7 +219,7 @@ func GetAllTrackingDrivers(c *gin.Context) {
 			},
 			bson.M{
 				"$group": bson.M{
-					"_id": bson.M{"driverId": "$driverId" },
+					"_id": bson.M{"driverId": "$driverId"},
 					"driverId": bson.M{ "$first": "$driverId" },
 					"locations": bson.M{"$push": "$$ROOT"},
 					//"lat": bson.M{"$first": "$lat"},

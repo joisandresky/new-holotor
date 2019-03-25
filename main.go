@@ -68,6 +68,9 @@ func wsHandler(c *gin.Context) {
 		var msg Message
 		err := conn.ReadJSON(&msg)
 		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Printf("error unexpected: %v", err)
+			}
 			log.Printf("Error: %v", err)
 			delete(clients, conn)
 			break
