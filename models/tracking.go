@@ -13,6 +13,7 @@ type Tracking struct {
 	Distance	float64 `json:"distance" bson:"distance"`
 	Latitude	float64	`json:"lat" bson:"lat"`
 	Longitude	float64	`json:"long" bson:"long"`
+	Status string	`json:"status" bson:"status"`
 	Description string	`json:"description" bson:"description"`
 	CreatedAt time.Time	`json:"created_at" bson:"created_at"`
 }
