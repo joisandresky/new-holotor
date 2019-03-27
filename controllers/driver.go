@@ -181,6 +181,46 @@ func UpdateAnnualyDistance(driver *models.Driver, driverID string, distance floa
 	}
 }
 
+func ResetDriverAndTrackings(c *gin.Context) {
+	driverId := c.Param("id")
+	driverIdINT, err := strconv.Atoi(driverId)
+	if err != nil {
+		log.Println("Error to convert string to Int")
+	}
+
+	go ResetDriverAnalytics(driverId)
+	go ResetDriverTrackingPoint(driverIdINT)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "DONE",
+		"status": 1,
+	})
+}
+
+func ResetDriverAnalytics(driverID string) {
+	session, err := config.Connect()
+	defer session.Close()
+
+	if err = session.DB("holotor").C("driver").Update(bson.M{ "driver_id": driverID }, bson.M{  "driver_id": driverID,"total": 0, "annualy": 0, "daily": 0 }) ; err != nil {
+		log.Println("Driver Analytics Not Updated something error", err)
+		return
+	}
+
+	log.Println("Driver Analytics was Reset!")
+}
+
+func ResetDriverTrackingPoint(driverID int) {
+	session, err := config.Connect()
+	defer session.Close()
+
+	if err = session.DB("holotor").C("tracking").Remove(bson.M{ "driverId": driverID }) ; err != nil {
+		log.Println("Driver Tracking Point Not Removed something error", err)
+		return
+	}
+
+	log.Println("Driver Tracking Point was Reset!")
+}
+
 func dateEqual(date1, date2 time.Time) bool {
 	y1, m1, d1 := date1.Date()
 	y2, m2, d2 := date2.Date()

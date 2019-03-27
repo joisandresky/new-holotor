@@ -36,6 +36,7 @@ func main() {
 	driver := r.Group("/api/drivers")
 	{
 		driver.GET("/analytics/:id", controllers.GetAnalytics)
+		driver.GET("/reset/:id", controllers.ResetDriverAndTrackings)
 		driver.POST("/analytics", controllers.CreateNewDriver)
 		driver.PUT("/analytics/:id", controllers.UpdateDistance)
 	}
