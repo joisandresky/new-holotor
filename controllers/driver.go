@@ -201,7 +201,7 @@ func ResetDriverAnalytics(driverID string) {
 	session, err := config.Connect()
 	defer session.Close()
 
-	if err = session.DB("holotor").C("driver").Update(bson.M{ "driver_id": driverID }, bson.M{  "driver_id": driverID,"total": 0, "annualy": 0, "daily": 0 }) ; err != nil {
+	if err = session.DB("holotor").C("driver").Update(bson.M{ "driver_id": driverID }, bson.M{  "driver_id": driverID,"total": 0, "annualy": 0, "daily": 0, "updated_at": time.Now() }) ; err != nil {
 		log.Println("Driver Analytics Not Updated something error", err)
 		return
 	}
