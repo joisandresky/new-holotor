@@ -213,7 +213,9 @@ func ResetDriverTrackingPoint(driverID int) {
 	session, err := config.Connect()
 	defer session.Close()
 
-	if err = session.DB("holotor").C("tracking").Remove(bson.M{ "driverId": driverID }) ; err != nil {
+	log.Println("The Driver ID: ", driverID)
+	_, err = session.DB("holotor").C("tracking").RemoveAll(bson.M{ "driverId": driverID })
+	if err != nil {
 		log.Println("Driver Tracking Point Not Removed something error", err)
 		return
 	}
